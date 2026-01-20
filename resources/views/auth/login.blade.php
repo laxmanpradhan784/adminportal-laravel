@@ -153,12 +153,6 @@
 </head>
 <body>
     <div class="login-card">
-        <!-- Logo -->
-        <div class="logo">
-            <i class="fas fa-shopping-cart"></i>
-            <h1>E-commerce<span>Admin</span></h1>
-        </div>
-
         <!-- Login Header -->
         <div class="login-header">
             <h2>Welcome Back!</h2>
@@ -268,22 +262,6 @@
                 </a>
             </div>
         </form>
-
-        <!-- Demo Credentials -->
-        <div class="mt-4 p-3 bg-light rounded">
-            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Demo Credentials:</h6>
-            <div class="row">
-                <div class="col-6">
-                    <small class="text-muted">Admin:</small><br>
-                    <strong>admin@example.com</strong><br>
-                    <strong>password123</strong>
-                </div>
-                <div class="col-6">
-                    <small class="text-muted">User:</small><br>
-                    <strong>user@example.com</strong><br>
-                    <strong>password123</strong>
-                </div>
-            </div>
         </div>
     </div>
 
