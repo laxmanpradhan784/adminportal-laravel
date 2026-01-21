@@ -29,13 +29,12 @@ class AuthController extends Controller
             // Redirect based on user role
             $user = Auth::user();
             
-            // If you have role field
-            if (isset($user->role) && $user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
+            // Check user role and redirect accordingly
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Welcome back, Admin!');
+            } else {
+                return redirect()->route('profile')->with('success', 'Welcome back!');
             }
-            
-            // Default redirect
-            return redirect()->route('admin.dashboard');
         }
 
         return back()->withErrors([
@@ -60,12 +59,13 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user' // Default role
+            'role' => 'user' // All new registrations are regular users
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('admin.dashboard');
+        // Redirect new users to their profile
+        return redirect()->route('user.profile')->with('success', 'Account created successfully! Welcome!');
     }
 
     public function logout(Request $request)
@@ -73,6 +73,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('success', 'You have been logged out successfully.');
     }
 }

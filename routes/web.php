@@ -53,3 +53,19 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/test', function() {
     return 'Test route working!';
 });
+
+
+
+// ONLY Profile Route
+Route::get('/profile', function () {
+    return view('userside.profile');
+})->name('profile');
+
+
+// Admin Profile Route
+Route::prefix('admin')->group(function () {
+    Route::get('/profile', function () {
+        return view('admin.profile');
+    })->name('admin.profile');
+});
+
