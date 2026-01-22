@@ -11,12 +11,19 @@ use App\Http\Controllers\SliderController;
 // ====================
 // PUBLIC ROUTES
 // ====================
-Route::get('/', [AuthController::class, 'showLogin'])->name('login');
-Route::get('/login', [AuthController::class, 'showLogin']);
-Route::post('/login', [AuthController::class, 'login']);
+// ONLY Home Route
+Route::get('/', function () {
+    return view('home');
+})->name('home');
+
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 // ====================
 // ADMIN ROUTES (Protected by auth)
@@ -26,9 +33,11 @@ Route::middleware(['auth'])->group(function () {
     // ===== DASHBOARD =====
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
-    // ===== PROFILE =====
-    Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
-    Route::post('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
+    // ===== ADMIN PROFILE =====
+    Route::prefix('admin')->group(function () {
+        Route::get('/profile', [AdminController::class, 'profile'])->name('admin.profile');
+        Route::post('/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
+    });
     
     // ===== PRODUCTS (CRUD) =====
     Route::resource('products', ProductController::class);
@@ -48,24 +57,34 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ====================
-// OPTIONAL: API or other routes
+// USER ROUTES (Protected by auth)
+// ====================
+Route::middleware(['auth'])->group(function () {
+    // ===== USER PROFILE =====
+    Route::get('/profile', function () {
+        // Check if user is admin
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.profile');
+        }
+        return view('userside.profile');
+    })->name('profile');
+});
+
+// ====================
+// TEST ROUTE
 // ====================
 Route::get('/test', function() {
     return 'Test route working!';
 });
 
 
+use App\Http\Controllers\UserSide\ShowProductController;
+use App\Http\Controllers\UserSide\storeContactController;
 
-// ONLY Profile Route
-Route::get('/profile', function () {
-    return view('userside.profile');
-})->name('profile');
+// Products Page
+Route::get('/products', [ShowProductController::class, 'index'])->name('products');
 
 
-// Admin Profile Route
-Route::prefix('admin')->group(function () {
-    Route::get('/profile', function () {
-        return view('admin.profile');
-    })->name('admin.profile');
-});
-
+// Contact Routes
+Route::get('/contact', [storeContactController::class, 'index'])->name('contact');
+Route::post('/contact', [storeContactController::class, 'store'])->name('contact.store');
